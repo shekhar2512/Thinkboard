@@ -4,6 +4,7 @@
   "description": "",
   "main": "src/server.js",
   "scripts": {
+    "build": "npm install && npm install --prefix ../frontend && npm run build --prefix ../frontend",
     "dev": "nodemon src/server.js",
     "start": "node src/server.js"
   },
@@ -15,6 +16,7 @@
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
+    "express-rate-limit": "^8.5.2",
     "mongoose": "^9.4.1"
   },
   "devDependencies": {
