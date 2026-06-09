@@ -1,0 +1,113 @@
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { ArrowLeft, Save } from "lucide-react";
+import Navbar from "../components/Navbar";
+
+const CreatePage = () => {
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!title.trim() || !content.trim()) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      await axios.post("http://localhost:3000/api/notes", { title, content });
+      toast.success("Note created successfully!");
+      navigate("/");
+    } catch (error) {
+      console.error("Error creating note:", error);
+      toast.error("Failed to create note");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-base-100 pb-12">
+      <Navbar />
+
+      <main className="max-w-2xl mx-auto px-4 py-8">
+        <div className="mb-6">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-base-content/60 hover:text-primary transition-colors"
+          >
+            <ArrowLeft className="size-4" />
+            <span>Back to Thinkboard</span>
+          </Link>
+        </div>
+
+        <div className="card bg-base-200 border border-base-content/10 shadow-lg">
+          <div className="card-body p-6 md:p-8">
+            <h2 className="card-title text-2xl font-bold text-base-content mb-6">Create New Note</h2>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="form-control w-full">
+                <label className="label">
+                  <span className="label-text font-semibold text-base-content/75">Title</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter note title..."
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  className="input input-bordered w-full focus:outline-none focus:border-primary text-base-content"
+                  maxLength={100}
+                  required
+                />
+              </div>
+
+              <div className="form-control w-full">
+                <label className="label">
+                  <span className="label-text font-semibold text-base-content/75">Content</span>
+                </label>
+                <textarea
+                  placeholder="Write your note contents here..."
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  className="textarea textarea-bordered h-64 focus:outline-none focus:border-primary leading-relaxed text-base-content"
+                  required
+                />
+              </div>
+
+              <div className="card-actions justify-end pt-4 gap-3">
+                <Link to="/" className="btn btn-ghost">
+                  Cancel
+                </Link>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="btn btn-primary px-6 shadow-md hover:shadow-lg transition-all gap-2"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <span className="loading loading-spinner loading-sm"></span>
+                      <span>Creating...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Save className="size-4" />
+                      <span>Save Note</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+};
+
+export default CreatePage;
