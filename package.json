@@ -18,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/shekhar2512/Thinkboard/issues"
   },
-  "homepage": "https://github.com/shekhar2512/Thinkboard#readme"
+  "homepage": "https://github.com/shekhar2512/Thinkboard#readme",
+  "dependencies": {
+    "pdfkit": "^0.19.0"
+  }
 }
