@@ -1,5 +1,7 @@
 import dns from 'dns';
 dns.setDefaultResultOrder('ipv4first');
+// Use public DNS servers for Atlas SRV lookups when the local resolver is unavailable.
+dns.setServers(['8.8.8.8', '1.1.1.1']);
 
 import dotenv from 'dotenv';
 dotenv.config();
