@@ -57,19 +57,25 @@ if (process.env.NODE_ENV === "production") {
 
 // app.use(express.static(path.join(__dirname,"../frontend/dist")));
 
-const start = async () => {
-  try {
-    await connectDB();
-    const PORT = process.env.PORT || 3000;
-    app.listen(PORT, () => {
-      console.log(`Server is running on port: ${PORT}`);
-    });
-  } catch (error) {
-    console.error('Server startup failed:', error);
-    process.exit(1);
-  }
-};
+if (!process.env.VERCEL) {
+  const start = async () => {
+    try {
+      await connectDB();
+      const PORT = process.env.PORT || 3000;
+      app.listen(PORT, () => {
+        console.log(`Server is running on port: ${PORT}`);
+      });
+    } catch (error) {
+      console.error('Server startup failed:', error);
+      process.exit(1);
+    }
+  };
+  start();
+} else {
+  // On Vercel, just connect to the database (Serverless mode)
+  connectDB();
+}
 
-start();
+export default app;
 
 // Connection string backup: mongodb+srv://shekharbaheliya4000_db_user:XBxmKo5TvVP5Kc7h@cluster0.n4sehhu.mongodb.net/?appName=Cluster0
