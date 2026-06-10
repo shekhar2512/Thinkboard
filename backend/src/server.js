@@ -1,4 +1,5 @@
-
+import dns from 'dns';
+dns.setDefaultResultOrder('ipv4first');
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -19,8 +20,10 @@ const __dirname = path.resolve();
 
 // CORS middleware
 app.use(cors());
-
 app.use(express.json());
+
+// Trust proxy for rate limiter to work correctly behind Render
+app.set('trust proxy', 1);
 
 // Rate limiting middleware to protect endpoints (Chapter 6)
 const limiter = rateLimit({
