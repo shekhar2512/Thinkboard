@@ -5,6 +5,8 @@ import toast from "react-hot-toast";
 import { Edit2, Trash2, Calendar, FileText } from "lucide-react";
 import Navbar from "../components/Navbar";
 
+const API_URL = import.meta.env.MODE === "development" ? "http://localhost:3000" : "";
+
 const Homepage = () => {
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -13,7 +15,7 @@ const Homepage = () => {
   const fetchNotes = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("http://localhost:3000/api/notes");
+      const response = await axios.get(`${API_URL}/api/notes`);
       setNotes(response.data);
     } catch (error) {
       console.error("Error fetching notes:", error);
@@ -32,7 +34,7 @@ const Homepage = () => {
     if (!window.confirm("Are you sure you want to delete this note?")) return;
 
     try {
-      await axios.delete(`http://localhost:3000/api/notes/${id}`);
+      await axios.delete(`${API_URL}/api/notes/${id}`);
       toast.success("Note deleted successfully");
       // Update state without refetching
       setNotes(notes.filter((note) => note._id !== id));

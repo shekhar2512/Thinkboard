@@ -5,6 +5,8 @@ import toast from "react-hot-toast";
 import { ArrowLeft, Save } from "lucide-react";
 import Navbar from "../components/Navbar";
 
+const API_URL = import.meta.env.MODE === "development" ? "http://localhost:3000" : "";
+
 const NoteDetailsPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -18,7 +20,7 @@ const NoteDetailsPage = () => {
     const fetchNote = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`http://localhost:3000/api/notes/${id}`);
+        const response = await axios.get(`${API_URL}/api/notes/${id}`);
         setTitle(response.data.title);
         setContent(response.data.content);
       } catch (error) {
@@ -44,7 +46,7 @@ const NoteDetailsPage = () => {
 
     try {
       setIsSubmitting(true);
-      await axios.put(`http://localhost:3000/api/notes/${id}`, { title, content });
+      await axios.put(`${API_URL}/api/notes/${id}`, { title, content });
       toast.success("Note updated successfully!");
       navigate("/");
     } catch (error) {
