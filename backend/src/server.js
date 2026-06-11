@@ -46,35 +46,19 @@ app.get('/', (req, res) => {
   res.send('Thinkboard API running. Use /api/notes for the notes endpoints.');
 });
 
-// Serve frontend in production (Chapter 12)
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "../frontend/dist")));
-  // fallback to index.html for client-side routing
-  app.use((req, res) => {
-    res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
-  });
-}
-
-// app.use(express.static(path.join(__dirname,"../frontend/dist")));
-
-if (!process.env.VERCEL) {
-  const start = async () => {
-    try {
-      await connectDB();
-      const PORT = process.env.PORT || 3000;
-      app.listen(PORT, () => {
-        console.log(`Server is running on port: ${PORT}`);
-      });
-    } catch (error) {
-      console.error('Server startup failed:', error);
-      process.exit(1);
-    }
-  };
-  start();
-} else {
-  // On Vercel, just connect to the database (Serverless mode)
-  connectDB();
-}
+const start = async () => {
+  try {
+    await connectDB();
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => {
+      console.log(`Server is running on port: ${PORT}`);
+    });
+  } catch (error) {
+    console.error('Server startup failed:', error);
+    process.exit(1);
+  }
+};
+start();
 
 export default app;
 

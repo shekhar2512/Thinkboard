@@ -1,11 +1,9 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import axios from "axios";
+import api from "../api";
 import toast from "react-hot-toast";
 import { ArrowLeft, Save } from "lucide-react";
 import Navbar from "../components/Navbar";
-
-const API_URL = import.meta.env.MODE === "development" ? "http://localhost:3000" : "";
 
 const CreatePage = () => {
   const [title, setTitle] = useState("");
@@ -23,7 +21,7 @@ const CreatePage = () => {
 
     try {
       setIsSubmitting(true);
-      await axios.post(`${API_URL}/api/notes`, { title, content });
+      await api.post(`/notes`, { title, content });
       toast.success("Note created successfully!");
       navigate("/");
     } catch (error) {
