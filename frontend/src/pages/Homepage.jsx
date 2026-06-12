@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../api";
 import toast from "react-hot-toast";
-import { Edit2, Trash2, Calendar, FileText } from "lucide-react";
+import { Edit2, Trash2, Calendar, FileText, Search } from "lucide-react";
 import Navbar from "../components/Navbar";
 
 const Homepage = () => {
+  const [searchQuery, setSearchQuery] = useState("");
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -13,7 +14,7 @@ const Homepage = () => {
   const fetchNotes = async () => {
     try {
       setLoading(true);
-      const response = await api.get(`/notes`);
+      const response = await api.get(`/notes?createdBy=${searchQuery}`);
       setNotes(response.data);
     } catch (error) {
       console.error("Error fetching notes:", error);
@@ -25,7 +26,8 @@ const Homepage = () => {
 
   useEffect(() => {
     fetchNotes();
-  }, []);
+    
+  }, [searchQuery]);
 
   // Delete a note
   const handleDelete = async (id) => {
@@ -42,6 +44,8 @@ const Homepage = () => {
     }
   };
 
+  
+
   return (
     <div className="min-h-screen bg-base-100 pb-12">
       <Navbar />
@@ -52,8 +56,22 @@ const Homepage = () => {
             <h2 className="text-2xl font-bold text-base-content">My Thinkboard</h2>
             <p className="text-sm text-base-content/60">Organize and keep track of your thoughts</p>
           </div>
-          <div className="badge badge-primary badge-outline font-semibold">
-            {notes.length} {notes.length === 1 ? "Note" : "Notes"}
+          <div className="flex items-center gap-4">
+            <div className="badge badge-primary badge-outline font-semibold">
+              {notes.length} {notes.length === 1 ? "Note" : "Notes"}
+            </div>
+
+                        {/* The new search box with the icon inside! */}
+            <label className="input input-sm input-bordered input-primary flex items-center gap-2">
+              <Search className="size-4 opacity-70" />
+              <input
+                type="text"
+                className="grow"
+                placeholder="Search createdby..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </label>
           </div>
         </div>
 
@@ -82,13 +100,17 @@ const Homepage = () => {
                 key={note._id}
                 className="card bg-base-200 border border-base-content/10 shadow-sm hover:shadow-md hover:border-primary/30 transition-all duration-300 group flex flex-col justify-between"
               >
-                <div className="card-body p-6">
-                  <h3 className="card-title text-lg font-bold text-base-content group-hover:text-primary transition-colors line-clamp-1">
+
+                <div className="card-body p-6 relative">
+                  <h3 className="card-title text-lg font-bold text-base-content group-hover:text-primary transition-colors line-clamp-1 pr-16">
                     {note.title}
                   </h3>
                   <p className="text-sm text-base-content/75 mt-2 line-clamp-4 whitespace-pre-line leading-relaxed">
                     {note.content}
                   </p>
+                  <div className="absolute top-4 right-4 badge badge-secondary badge-sm font-semibold shadow-sm">
+                    {note.createdBy}
+                  </div>
                 </div>
 
                 <div className="px-6 py-4 bg-base-300/40 border-t border-base-content/5 rounded-b-2xl flex items-center justify-between mt-auto">

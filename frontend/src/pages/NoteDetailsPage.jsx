@@ -10,6 +10,7 @@ const NoteDetailsPage = () => {
   const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [createdBy, setCreatedBy] = useState("");
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -21,6 +22,7 @@ const NoteDetailsPage = () => {
         const response = await api.get(`/notes/${id}`);
         setTitle(response.data.title);
         setContent(response.data.content);
+        setCreatedBy(response.data.createdBy);
       } catch (error) {
         console.error("Error fetching note:", error);
         toast.error("Failed to load note details");
@@ -37,14 +39,14 @@ const NoteDetailsPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!title.trim() || !content.trim()) {
+    if (!title.trim() || !content.trim() || !createdBy.trim()) {
       toast.error("Please fill in all fields");
       return;
     }
 
     try {
       setIsSubmitting(true);
-      await api.put(`/notes/${id}`, { title, content });
+      await api.put(`/notes/${id}`, { title, content, createdBy });
       toast.success("Note updated successfully!");
       navigate("/");
     } catch (error) {
@@ -105,6 +107,21 @@ const NoteDetailsPage = () => {
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                     className="textarea textarea-bordered h-64 focus:outline-none focus:border-primary leading-relaxed text-base-content"
+                    required
+                  />
+                </div>
+
+                <div className="form-control w-full">
+                  <label className="label">
+                    <span className="label-text font-semibold text-base-content/75">Created By</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Enter your name..."
+                    value={createdBy}
+                    onChange={(e) => setCreatedBy(e.target.value)}
+                    className="input input-bordered w-full focus:outline-none focus:border-primary text-base-content"
+                    maxLength={50}
                     required
                   />
                 </div>

@@ -8,20 +8,21 @@ import Navbar from "../components/Navbar";
 const CreatePage = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [createdBy, setCreatedBy] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!title.trim() || !content.trim()) {
+    if (!title.trim() || !content.trim() || !createdBy.trim()) {
       toast.error("Please fill in all fields");
       return;
     }
 
     try {
       setIsSubmitting(true);
-      await api.post(`/notes`, { title, content });
+      await api.post(`/notes`, { title, content, createdBy });
       toast.success("Note created successfully!");
       navigate("/");
     } catch (error) {
@@ -76,6 +77,20 @@ const CreatePage = () => {
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
                   className="textarea textarea-bordered h-64 focus:outline-none focus:border-primary leading-relaxed text-base-content"
+                  required
+                />
+              </div>
+
+              <div className="form-control w-full">
+                <label className="label">
+                  <span className="label-text font-semibold text-base-content/75">Created By</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter your name..."
+                  value={createdBy}
+                  onChange={(e) => setCreatedBy(e.target.value)}
+                  className="input input-bordered w-full focus:outline-none focus:border-primary text-base-content"
                   required
                 />
               </div>
